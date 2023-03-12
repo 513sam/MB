@@ -1,0 +1,171 @@
+on left clicking:
+	if player's gamemode is adventure:
+		if player's tool is golden hoe:
+			cancel event
+			if {직업.거너.%event-player%} is true:
+				if {장전중.%event-player%} is false:
+					if {잔탄.%event-player%} > 0:
+						if {쿨타임.거너.공속.%event-player%} is 0:
+							subtract 1 from {잔탄.%event-player%}
+							set {쿨타임.거너.공속.%event-player%} to 5
+							execute console command "/execute as %event-player% at @s run playsound minecraft:entity.firework_rocket.blast master @a ~ ~ ~ 1 1.5"
+							loop 50 times:
+								if block at location loop-number meter forwards player's head is air or snow or grass or flower or button or lever or slab:
+									set {_loc} to location loop-number-2  meter forwards event-player's head
+									play 1 crit with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc}
+									set {_loc2} to location loop-number-2+0.4 meter forwards event-player's head
+									play 1 crit with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc2}
+									set {_loc3} to location loop-number-2 +0.8 meter forwards event-player's head	
+									play 1 crit with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc3}
+									if distance between player and target living entity is less than loop-number:
+										if target living entity's gamemode is adventure:
+											if {blue.%event-player%} is true:
+												if {red.%target living entity%} is true:
+													execute console command "/execute as %target living entity% at @s run particle minecraft:blast ~ ~1 ~ 0.3 0.5 0.3 0.3 10 force"
+													damage target living entity by 7 hearts
+													set {attacker.%target living entity%} to "%event-player%"
+											if {red.%event-player%} is true:
+												if {blue.%target living entity%} is true:
+													execute console command "/execute as %target living entity% at @s run particle minecraft:blast ~ ~1 ~ 0.3 0.5 0.3 0.3 10 force"
+													damage target living entity by 7 hearts
+													set {attacker.%target living entity%} to "%event-player%"
+											stop loop
+									
+								if block at location loop-number meter forwards event-player's head is not air or snow or grass or flower or button or lever or slab:		
+									stop loop
+							stop
+					if {잔탄.%event-player%} = 0:
+						message "총알이 없습니다."
+
+on right click:
+	if player's gamemode is adventure:
+		if player's tool is golden hoe:
+			cancel event
+			if player is not sneaking:
+				if {직업.거너.%event-player%} is true:
+					if {잔탄.%event-player%} < 6:
+						if {장전중.%event-player%} is false:
+							#장전
+							set {장전중.%event-player%} to true
+							send title "장전중" to player for 1.2 seconds
+							while {잔탄.%event-player%} < 6:
+								wait 0.3 seconds
+								send title "장전중" to player for 0.3 seconds
+								execute console command "/execute as %event-player% at @s run playsound minecraft:block.fence_gate.open master @a ~ ~ ~ 0.3 2"
+								add 1 to {잔탄.%event-player%}
+							set {장전중.%event-player%} to false
+						if {장전중.%event-player%} is true:
+							stop
+					
+
+
+			
+
+every 0.1 seconds:
+	loop all players:
+		if {잔탄.%loop-player%} is not set:
+			set {잔탄.%loop-player%} to 6
+		if {쿨타임.거너.공속.%loop-player%} is not set:
+			set {쿨타임.거너.공속.%loop-player%} to 0
+		if {장전중.%loop-player%} is not set:
+			set {장전중.%loop-player%} to false
+
+
+
+on rightclicking:
+	if player's gamemode is adventure:
+		if player's tool is golden hoe:
+			cancel event
+			if player is sneaking:
+				if {게임진행} is true:
+					if {직업.거너.%event-player%} is true:
+						if {쿨타임.거너.연막탄.%event-player%} is 0:	
+							set {쿨타임.거너.연막탄.%event-player%} to 19
+							execute console command "/execute as %event-player% at @s run playsound minecraft:entity.firework_rocket.blast master @a ~ ~ ~ 1 1.5"
+							loop 50 times:
+								if block at location loop-number meter forwards player's head is air or snow or grass or flower or button or lever or slab:
+									set {_loc} to location loop-number-2 meter forwards event-player's head
+									if distance between event-player and target living entity is less than loop-number:
+										if target living entity is not event-player:
+											set {거너임시.x_pos.%event-player%} to location loop-number-2 meter forwards event-player's head's x position
+											set {거너임시.y_pos.%event-player%} to location loop-number-2 meter forwards event-player's head's y position
+											set {거너임시.z_pos.%event-player%} to location loop-number-2 meter forwards event-player's head's z position
+											set {거너.x_pos.%event-player%} to floor({거너임시.x_pos.%event-player%})
+											set {거너.y_pos.%event-player%} to floor({거너임시.y_pos.%event-player%})
+											set {거너.z_pos.%event-player%} to floor({거너임시.z_pos.%event-player%})
+
+
+											set {거너연막활성.%event-player%} to true
+											execute console command "/particle minecraft:campfire_cosy_smoke %{거너.x_pos.%event-player%}% %{거너.y_pos.%event-player%} + 1% %{거너.z_pos.%event-player%}% 1.3 0.6 1.3 0 500 force"
+											execute console command "/particle minecraft:campfire_cosy_smoke %{거너.x_pos.%event-player%}% %{거너.y_pos.%event-player%} + 1% %{거너.z_pos.%event-player%}% 1.3 0.6 1.3 0 500 force"
+											wait 2.5 seconds
+											execute console command "/particle minecraft:campfire_cosy_smoke %{거너.x_pos.%event-player%}% %{거너.y_pos.%event-player%} + 1% %{거너.z_pos.%event-player%}% 1.3 0.6 1.3 0 500 force"
+											execute console command "/particle minecraft:campfire_cosy_smoke %{거너.x_pos.%event-player%}% %{거너.y_pos.%event-player%} + 1% %{거너.z_pos.%event-player%}% 1.3 0.6 1.3 0 500 force"
+											wait 3.3 seconds
+											set {거너연막활성.%event-player%} to false
+											stop loop
+
+
+								if block at location loop-number meter forwards event-player's head is not air or snow or grass or flower or button or lever or slab:		
+									set {거너임시.x_pos.%event-player%} to location loop-number-2 meter forwards event-player's head's x position
+									set {거너임시.y_pos.%event-player%} to location loop-number-2 meter forwards event-player's head's y position
+									set {거너임시.z_pos.%event-player%} to location loop-number-2 meter forwards event-player's head's z position
+									set {거너.x_pos.%event-player%} to floor({거너임시.x_pos.%event-player%})
+									set {거너.y_pos.%event-player%} to floor({거너임시.y_pos.%event-player%})
+									set {거너.z_pos.%event-player%} to floor({거너임시.z_pos.%event-player%})
+
+
+									set {거너연막활성.%event-player%} to true
+									execute console command "/particle minecraft:campfire_cosy_smoke %{거너.x_pos.%event-player%}% %{거너.y_pos.%event-player%} + 1% %{거너.z_pos.%event-player%}% 1.3 0.6 1.3 0 500 force"
+									execute console command "/particle minecraft:campfire_cosy_smoke %{거너.x_pos.%event-player%}% %{거너.y_pos.%event-player%} + 1% %{거너.z_pos.%event-player%}% 1.3 0.6 1.3 0 500 force"
+									wait 2.5 seconds
+									execute console command "/particle minecraft:campfire_cosy_smoke %{거너.x_pos.%event-player%}% %{거너.y_pos.%event-player%} + 1% %{거너.z_pos.%event-player%}% 1.3 0.6 1.3 0 500 force"
+									execute console command "/particle minecraft:campfire_cosy_smoke %{거너.x_pos.%event-player%}% %{거너.y_pos.%event-player%} + 1% %{거너.z_pos.%event-player%}% 1.3 0.6 1.3 0 500 force"
+									wait 3.3 seconds
+									set {거너연막활성.%event-player%} to false
+									stop loop
+
+
+every 0.1 seconds:
+	loop all players:
+		if {거너연막활성.%loop-player%} is true:
+			if {blue.%loop-player%} is true:
+				
+				execute console command "/execute positioned %{거너.x_pos.%loop-player%}% %{거너.y_pos.%loop-player%} + 1% %{거너.z_pos.%loop-player%}% run effect give @a[gamemode=adventure,distance=..3.5,team=red] blindness 2 255 true"
+				execute console command "/execute positioned %{거너.x_pos.%loop-player%}% %{거너.y_pos.%loop-player%} + 1% %{거너.z_pos.%loop-player%}% run effect give @a[gamemode=adventure,distance=..3.5,team=red] glowing 2 255 true"
+			if {red.%loop-player%} is true:
+				execute console command "/execute positioned %{거너.x_pos.%loop-player%}% %{거너.y_pos.%loop-player%} + 1% %{거너.z_pos.%loop-player%}% run effect give @a[gamemode=adventure,distance=..3.5,team=blue] blindness 2 255 true"
+				execute console command "/execute positioned %{거너.x_pos.%loop-player%}% %{거너.y_pos.%loop-player%} + 1% %{거너.z_pos.%loop-player%}% run effect give @a[gamemode=adventure,distance=..3.5,team=blue] glowing 2 255 true"
+
+
+
+
+
+
+
+
+every 1 seconds:
+	loop all players:
+		if {직업.거너.%loop-player%} is true:
+			if {쿨타임.거너.연막탄.%loop-player%} > 0:
+				subtract 1 from {쿨타임.거너.연막탄.%loop-player%}
+			else:
+				set {쿨타임.거너.연막탄.%loop-player-1%} to 0
+		else:
+			set {버리기} to true
+every 0.1 seconds:
+	loop all players:
+		if {직업.거너.%loop-player%} is true:
+			if {쿨타임.거너.공속.%loop-player%} > 0:
+				subtract 1 from {쿨타임.거너.공속.%loop-player%}
+			else:
+				set {쿨타임.거너.공속.%loop-player%} to 0
+		else:
+			set {버리기} to true
+
+
+
+
+
+			
+

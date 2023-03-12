@@ -1,0 +1,1086 @@
+#직업
+#버서커 : 위압, 폭주, 발악
+
+#도박수 : 스텍형 캐리챔프 (죽었다 살아날때마다 주사위를 주고 킬을 하면 확률이 점점 좋아짐, 데미지는 스텍으로 쌓임)
+
+#도적 : 질풍참, 위로 도약후 찍기, 패시브 : 영혼수확
+
+#타길라 : 무기 전환하는거  (탱 딜 힐 모드 변경) 탱으로 바꾸면 스킬도 약간 탱느낌 , 딜로 바꾸면 약간 딜느낌으로 전부 바꾸기  (세니타 약으로 힐)
+
+#시간여행자 : 순간 신속 ~ 공속 증가 
+
+#(광)조윤경 : (베리어)(저항+재생)(나노강화제)
+
+#요리사 : 
+
+
+#갑옷 벗기 막기
+
+
+
+
+
+
+
+
+on explode:
+	cancel event
+
+
+#변수 설정용 명령어
+command /variable [<text>] [<text>] [<text>] [<text>]:
+	trigger:
+		if arg 1 is "set":
+			if arg 4 is set:
+				set {%arg 2%.%arg 4%} to "%arg 3%"
+			if arg 4 is not set:
+				set {%arg 2%} to "%arg 3%"
+				stop
+		if arg 1 is "add":
+			if arg 4 is set:
+				add arg 3 to {%arg 2%.%arg 4%}
+			if arg 4 is not set:
+				add arg 3 to {%arg 2%}
+				stop
+		if arg 1 is "message":
+			if arg 3 is set:
+				message "%{%arg 2%.%arg 3%}% 입니다"
+			if arg 3 is not set:
+				message "%{%arg 2%}% 입니다"
+		if arg 1 is not set:
+			message "/variable [set/add/message] [변수] [값] [플레이어]"
+
+
+command /gm [<integer>] [<string>]:
+	trigger:
+		if arg 2 is not set:
+			if arg 1 is 1:	
+				execute player command "/gamemode creative %player%"
+			if arg 1 is 0:	
+				execute player command "/gamemode survival %player%"
+			if arg 1 is 2:	
+				execute player command "/gamemode adventure %player%"
+			if arg 1 is 3:	
+				execute player command "/gamemode spectator %player%"
+			stop
+		if arg 2 is set:
+			if arg 1 is 1:
+				execute player command "/gamemode creative %arg 2%"
+			if arg 1 is 0:	
+				execute player command "/gamemode survival %arg 2%"
+			if arg 1 is 2:	
+				execute player command "/gamemode adventure %arg 2%"
+			if arg 1 is 3:	
+				execute player command "/gamemode spectator %arg 2%"
+				
+command /tpall:
+	trigger:
+		execute player command "/tp @a %player%"
+		
+
+command /flyoff:
+	trigger:
+		message "fly off"
+		make player stop flying
+		
+		
+command /flyon:
+	trigger:
+		message "fly on"
+		make player start flying
+		
+
+
+
+#변수 설정
+
+#{red.%player%} = T/F
+#{blue.%player%} = T/F
+#{직업.%class%.%player%} = T/F
+#{attackdelay.%attacker%} = Int
+#{hitdelay.%attacker%.%victim%}
+#{hitdelay.fire.%victim%}
+#{이미선택됨.red.%class%} = T/F
+#{이미선택됨.blue.%class%} = T/F
+#{쿨타임.%class%.%skill%.%player%} = Int
+#{게임진행} = T/F
+#{게임준비.red} = T/F
+#{게임준비.blue} = T/F
+
+command /mb [<string>] [<string>] [<player>]:
+	trigger:
+		if arg 2 is not set:
+			if arg 1 is "setting":
+				#gamerule
+				execute console command "/gamerule commandBlockOutput false"
+				execute console command "/gamerule doDaylightCycle false"
+				execute console command "/gamerule doEntityDrops false"
+				execute console command "/gamerule doFireTick false"
+				execute console command "/gamerule doMobLoot false"
+				execute console command "/gamerule doMobSpawning false"
+				execute console command "/gamerule doTileDrops false"
+				execute console command "/gamerule doWeatherCycle false"
+				execute console command "/gamerule fallDamage false"
+				execute console command "/gamerule keepInventory true"
+				execute console command "/gamerule logAdminCommands false"
+				execute console command "/gamerule maxEntityCramming 2000"
+				execute console command "/gamerule mobGriefing false"
+				execute console command "/gamerule naturalRegeneration true"
+				execute console command "/gamerule sendCommandFeedback false"
+				execute console command "/gamerule showDeathMessages false"
+				execute console command "/gamerule spawnRadius 0"
+				execute console command "/gamerule sendCommandFeedback false"
+				execute console command "/gamerule doImmediateRespawn true"
+				execute console command "/difficulty peaceful"
+				execute console command "/time set day"
+				execute console command "/scoreboard objectives add health health"
+				execute console command "/scoreboard objectives setdisplay list health"
+				execute console command "/bossbar remove minecraft:point"
+				execute console command "/bossbar add point ""점령전"""
+				execute console command "/bossbar set minecraft:point max 41" #(100으로하면 99 하고 100 차이가 안보여서 101로 함)
+				execute console command "/bossbar set minecraft:point color white"
+				execute console command "/bossbar set minecraft:point players @a"
+				execute console command "/bossbar set minecraft:point style notched_20"
+				execute console command "/bossbar set minecraft:point value 80"
+				execute console command "/bossbar set minecraft:point visible true"
+
+				#점령 커멘드블럭 초기화
+				execute console command "/setblock 234 179 430 minecraft:air"
+				execute console command "/setblock 234 179 428 minecraft:air"
+				execute console command "/setblock 234 179 432 minecraft:air"
+				execute console command "/setblock 234 179 434 minecraft:air"
+
+				execute console command "/setblock -381 154 521 minecraft:air"
+				execute console command "/setblock -381 154 519 minecraft:air"
+				execute console command "/setblock -381 154 517 minecraft:air"
+				execute console command "/setblock -381 154 515 minecraft:air"
+
+				execute console command "/setblock -4 24 58 minecraft:air"
+				execute console command "/setblock -4 24 60 minecraft:air"
+				execute console command "/setblock -4 24 62 minecraft:air"
+				execute console command "/setblock -4 24 64 minecraft:air"
+				execute console command "/setblock 4 24 66 redstone_block"
+				execute console command "/setblock 229 179 436 minecraft:redstone_block"
+				execute console command "/setblock -376 155 525 minecraft:redstone_block"
+
+
+
+
+
+
+
+
+
+
+
+				#변수 초기화
+				set {class::*} to "버서커" , "도적" , "조윤경" , "수호자" , "성기사" , "마술사" , "거너" , "냉술사" and "암조윤경"
+				set {Mb.버서커skill::*} to "폭주" and "위압"
+				set {Mb.도적skill::*} to "돌풍" and "에어드라이버"
+				set {Mb.조윤경skill::*} to "흡수" and "응급처치"
+				set {Mb.수호자skill::*} to "무적" and "끈기의노래"
+				set {Mb.암조윤경skill::*} to "저주의빛" and "은밀한발걸음"
+				set {Mb.마술사skill::*} to "야바위" and "위치바꾸기"
+				set {Mb.성기사skill::*} to "성역" and "신의심판"
+				set {Mb.거너skill::*} to "장전" and "연막탄"
+				set {Mb.냉술사skill::*} to "얼음송이" and "절대영도"
+				
+
+
+
+				delete {players::*}
+				loop all players:
+					set {죽음게이트.%loop-player%} to false
+					set {부활대기시간.%loop-player%} to 10
+					set {hitdelay.fire.%loop-player%} to 0
+					set {red.%loop-player%} to false
+					set {blue.%loop-player%} to false
+					set {hitdelay.%loop-player%} to 5
+					set {attackdelay.%loop-player%} to 5
+					loop {class::*}:
+						set {직업.%loop-value-2%.%loop-player-1%} to false
+						set {이미선택됨.%loop-value-2%.red} to false
+						set {이미선택됨.%loop-value-2%.blue} to false
+					loop all players:
+						set {hitdelay.%loop-player-1%.%loop-player-2%} to 0
+					#스킬쿨 초기화
+					loop {Mb.버서커skill::*}:
+						set {쿨타임.버서커.%loop-value-2%.%loop-player-1%} to 0
+					loop {Mb.도적skill::*}:
+						set {쿨타임.도적.%loop-value-2%.%loop-player-1%} to 0
+					loop {Mb.조윤경skill::*}:
+						set {쿨타임.조윤경.%loop-value-2%.%loop-player-1%} to 0
+					loop {Mb.수호자skill::*}:
+						set {쿨타임.수호자.%loop-value-2%.%loop-player-1%} to 0
+					loop {Mb.암조윤경skill::*}:
+						set {쿨타임.암조윤경.%loop-value-2%.%loop-player-1%} to 0
+					loop {Mb.마술사skill::*}:
+						set {쿨타임.마술사.%loop-value-2%.%loop-player-1%} to 0
+					loop {Mb.성기사skill::*}:
+						set {쿨타임.성기사.%loop-value-2%.%loop-player-1%} to 0
+					loop {Mb.거너skill::*}:
+						set {쿨타임.거너.%loop-value-2%.%loop-player-1%} to 0
+					loop {Mb.냉술사skill::*}:
+						set {쿨타임.냉술사.%loop-value-2%.%loop-player-1%} to 0
+					
+					
+				
+				#게임진행관련 변수
+				set {게임진행} to false
+				set {게임준비.red} to false
+				set {게임준비.blue} to false
+				set {현재점령중} to 0
+				set {점령상태} to 0
+				set {점령게이지.red} to 0
+				set {점령게이지.blue} to 0
+				set {추가시간활성화.red} to false
+				set {추가시간활성화.blue} to false
+				set {추가시간.red} to 0
+				set {추가시간.blue} to 0
+				set {강탈게이지} to 0      
+				set {점령경과시간.red} to 0
+				set {점령경과시간.blue} to 0
+				set {블루팀스코어} to 0
+				set {레드팀스코어} to 0
+				set {레드팀점령중} to false
+				set {블루팀점령중} to false
+				#플레이어 스텟초기화
+				execute console command "/spawnpoint @a -23.00 4 428.00"
+				execute console command "/clear @a"
+				execute console command "/kill @e"
+				execute console command "/gamemode adventure @a"
+				execute console command "/execute as @a run attribute @s minecraft:generic.max_health base set 200"
+				execute console command "/execute as @a run attribute @s minecraft:generic.knockback_resistance base set 0.3"
+				execute console command "/execute as @a run attribute @s minecraft:generic.attack_speed base set 4"
+				execute console command "/summon armor_stand -380 162 519 {NoGravity:1b,Invulnerable:1b,Small:1b,Marker:1b,Invisible:1b,Tags:[""lijang""]}"
+				
+				#팀 설정
+				execute console command "/team remove red"
+				execute console command "/team remove blue"
+				execute console command "/team add red"
+				execute console command "/team add blue"
+				execute console command "/team modify red collisionRule never"
+				execute console command "/team modify blue collisionRule never"
+				execute console command "/team modify red color red"
+				execute console command "/team modify blue color blue"
+				execute console command "/team modify red friendlyFire false"
+				execute console command "/team modify blue friendlyFire false"
+				execute console command "/team modify red nametagVisibility always"
+				execute console command "/team modify blue nametagVisibility always"
+				message "&a&l초기화되었습니다" to all players
+
+
+				#스코어 보드
+				execute console command "/scoreboard objectives remove kill"
+				execute console command "/scoreboard objectives add kill dummy"
+				execute console command "/scoreboard objectives setdisplay sidebar kill"
+
+
+			if arg 1 is "start":
+				set {레드팀점령중} to false
+				set {블루팀점령중} to false
+				heal all players
+				execute console command "/setblock 234 179 430 minecraft:air"
+				execute console command "/setblock 234 179 428 minecraft:air"
+				execute console command "/setblock 234 179 432 minecraft:air"
+				execute console command "/setblock 234 179 434 minecraft:air"
+
+				execute console command "/setblock -381 154 521 minecraft:air"
+				execute console command "/setblock -381 154 519 minecraft:air"
+				execute console command "/setblock -381 154 517 minecraft:air"
+				execute console command "/setblock -381 154 515 minecraft:air"
+
+				execute console command "/setblock -4 24 58 minecraft:air"
+				execute console command "/setblock -4 24 60 minecraft:air"
+				execute console command "/setblock -4 24 62 minecraft:air"
+				execute console command "/setblock -4 24 64 minecraft:air"
+				execute console command "/setblock 4 24 66 redstone_block"
+				execute console command "/setblock 229 179 436 minecraft:redstone_block"
+				execute console command "/setblock -376 155 525 minecraft:redstone_block"
+				set {게임진행} to true
+				set {_ran} to a random integer between 1 and 3
+				if {_ran} is 1:
+					set {map} to "부산"
+				if {_ran} is 2:
+					set {map} to "일리오스"
+				if {_ran} is 3:
+					set {map} to "리장타워"
+				set {map_list::*} to "부산" , "일리오스" and "리장타워"
+				if {map} is "부산":
+					send title "게임시작까지 : 3" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 2" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 1" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					execute console command "/tp @a[team=blue] 141 186 455"
+					execute console command "/tp @a[team=red] 333 186 455"
+				if {map} is "일리오스":
+					send title "게임시작까지 : 3" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 2" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 1" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					execute console command "/tp @a[team=blue] 78 33 9"
+					execute console command "/tp @a[team=red] -82 33 9"
+				if {map} is "리장타워":
+					send title "게임시작까지 : 3" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 2" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 1" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					execute console command "/tp @a[team=blue] -307 164 510"
+					execute console command "/tp @a[team=red] -454 164 510"
+			if arg 1 is "next":
+				set {현재점령중} to 0
+				set {점령상태} to 0
+				set {점령게이지.red} to 0
+				set {점령게이지.blue} to 0
+				set {추가시간활성화.red} to false
+				set {추가시간활성화.blue} to false
+				set {추가시간.red} to 0
+				set {추가시간.blue} to 0
+				set {강탈게이지} to 0      
+				set {점령경과시간.red} to 0
+				set {점령경과시간.blue} to 0
+				set {레드팀점령중} to false
+				set {블루팀점령중} to false
+				execute console command "/setblock 234 179 430 minecraft:air"
+				execute console command "/setblock 234 179 428 minecraft:air"
+				execute console command "/setblock 234 179 432 minecraft:air"
+				execute console command "/setblock 234 179 434 minecraft:air"
+
+				execute console command "/setblock -381 154 521 minecraft:air"
+				execute console command "/setblock -381 154 519 minecraft:air"
+				execute console command "/setblock -381 154 517 minecraft:air"
+				execute console command "/setblock -381 154 515 minecraft:air"
+
+				execute console command "/setblock -4 24 58 minecraft:air"
+				execute console command "/setblock -4 24 60 minecraft:air"
+				execute console command "/setblock -4 24 62 minecraft:air"
+				execute console command "/setblock -4 24 64 minecraft:air"
+				execute console command "/setblock 4 24 66 redstone_block"
+				execute console command "/setblock 229 179 436 minecraft:redstone_block"
+				execute console command "/setblock -376 155 525 minecraft:redstone_block"
+
+				heal all players
+				if {map} is "부산":
+					execute console command "/tp @a[team=blue] 141 186 455"
+					execute console command "/tp @a[team=red] 333 186 455"
+				if {map} is "일리오스":
+					execute console command "/tp @a[team=blue] 78 33 9"
+					execute console command "/tp @a[team=red] -82 33 9"
+				if {map} is "리장타워":
+					execute console command "/tp @a[team=blue] -307 164 510"
+					execute console command "/tp @a[team=red] -454 164 510"
+				remove "%{map}%" from {map_list::*}
+				set {map} to random element of {map_list::*}
+				if {map} is "부산":
+					send title "게임시작까지 : 3" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 2" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 1" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					set {게임진행} to true
+					execute console command "/tp @a[team=blue] 141 186 455"
+					execute console command "/tp @a[team=red] 333 186 455"
+				if {map} is "일리오스":
+					send title "게임시작까지 : 3" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 2" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 1" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					set {게임진행} to true
+					execute console command "/tp @a[team=blue] 78 33 9"
+					execute console command "/tp @a[team=red] -82 33 9"
+				if {map} is "리장타워":
+					send title "게임시작까지 : 3" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 2" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					send title "게임시작까지 : 1" with subtitle "맵 : %{map}%" to all players for 1 seconds
+					wait 1 seconds
+					set {게임진행} to true
+					execute console command "/tp @a[team=blue] -307 164 510"
+					execute console command "/tp @a[team=red] -454 164 510"
+
+
+
+#반복형 커멘드 블럭 /레드팀점령중
+#반복형 커멘드 블럭 /블루팀점령중
+
+#반복형 커멘드 블럭 /레드팀점령중아님
+#반복형 커멘드 블럭 /레블팀점령중아님
+		if arg 2 is set:
+			if arg 3 is set:
+				if arg 1 is "join":
+					if arg 2 is "red":
+						if {red.%arg 3%} is true:
+							message "&6&l이미 &c&lRED팀&6&l에 참가하였습니다."
+							stop
+						if {red.%arg 3%} is false:
+							set {red.%arg 3%} to true
+							set {blue.%arg 3%} to false
+							execute console command "/team join red %arg 3%"
+							message "&6&l%arg 3%님이 &c&lRED팀&6&l에 참가하였습니다."
+							stop
+					if arg 2 is "blue":
+						if {blue.%arg 3%} is true:
+							message "&6&l이미 &9&lBLUE팀&6&l에 참가하였습니다."
+							stop
+						if {blue.%arg 3%} is false:
+							set {red.%arg 3%} to false
+							set {blue.%arg 3%} to true
+							execute console command "/team join blue %arg 3%"
+							message "&6&l%arg 3%님이 &9&lBLUE팀&6&l에 참가하였습니다."
+							stop
+					else:
+						message "&4 잘못된 명령어입니다 red/blue를 정확히 입력해주세요"
+						stop
+			if arg 3 is not set:
+				if arg 1 is "join":
+					if arg 2 is "red":
+						if {red.%player%} is true:
+							message "&6&l이미 &c&lRED팀&6&l에 참가하였습니다."
+							stop
+						if {red.%player%} is false:
+							set {red.%event-player%} to true
+							set {blue.%event-player%} to false
+							execute console command "/team join red %event-player%"
+							message "&6&l%player%님이 &c&lRED팀&6&l에 참가하였습니다."
+							stop
+					if arg 2 is "blue":
+						if arg 2 is "blue":
+							if {blue.%player%} is true:
+								message "&6&l이미 &9&lBLUE팀&6&l에 참가하였습니다."
+								stop
+							if {blue.%player%} is false:
+								set {red.%event-player%} to false
+								set {blue.%event-player%} to true
+								execute console command "/team join blue %event-player%"
+								message "&6&l%player%님이 &9&lBLUE팀&6&l에 참가하였습니다."
+								stop
+						
+					else:
+						message "&4 잘못된 명령어입니다 red/blue를 정확히 입력해주세요"
+
+			if arg 3 is not set:
+				if arg 1 is "win":
+					if arg 2 is "red":
+						send title "레드팀 최종승리" to all players
+						wait 5 seconds
+						execute console command "/mb setting"
+					if arg 2 is "blue":
+						send title "블루팀 최종승리" to all players
+						wait 5 seconds
+						execute console command "/mb setting"
+
+
+
+
+#직업 선택
+on rightclick holding a blue wool:
+	cancel event
+	if {blue.%player%} is false:
+		execute player command "/mb join blue"
+	execute player command "/class select"
+	
+on rightclick holding a red wool:
+	cancel event
+	if {red.%player%} is false:
+		execute player command "/mb join red"
+	execute player command "/class select"
+
+
+	
+						
+command /class [<text>] [<text>] [<player>]:
+	trigger:
+		if arg 1 is "select":
+			if arg 2 is not set:
+				open chest with 3 rows named "직업선택" to player
+				format slot 4 of player with barrier named "선택헤제" with lore "선택헤제" to close then run [execute player command "/class join none %player%"]
+				format slot 10 of player with iron sword named "&1성기사" with lore "설명" to close then run [execute player command "/class join 성기사 %player%"]
+				format slot 11 of player with iron axe named "&3버서커" with lore "설명" to close then run [execute player command "/class join 버서커 %player%"]
+				format slot 12 of player with leather boots named "&7도적" with lore "설명" to close then run [execute player command "/class join 도적 %player%"]
+				format slot 13 of player with enchanted golden apple named "&e(광)조윤경" with lore "설명" to close then run [execute player command "/class join 조윤경 %player%"]
+				format slot 14 of player with turtle helmet named "&8수호자" with lore "설명" to close then run [execute player command "/class join 수호자 %player%"]
+				format slot 15 of player with ender pearl named "&5(암)조윤경" with lore "설명" to close then run [execute player command "/class join 암조윤경 %player%"]
+				format slot 16 of player with blaze rod named "&d마술사" with lore "설명" to close then run [execute player command "/class join 마술사 %player%"]
+				format slot 19 of player with golden hoe named "&d거너" with lore "설명" to close then run [execute player command "/class join 거너 %player%"]
+				format slot 20 of player with packed ice named "&d냉술사" with lore "설명" to close then run [execute player command "/class join 냉술사 %player%"]
+
+				
+		if arg 1 is "join":
+			if arg 2 is "none":
+				if {red.%arg 3%} is true:
+					execute console command "/execute at %arg 3% run playsound minecraft:entity.experience_orb.pickup master @p ~ ~ ~ 1 1 "
+					loop {class::*}:
+						if {직업.%loop-value%.%arg 3%} is true:
+							set {이미선택됨.%loop-value%.red} to false
+							set {직업.%loop-value%.%arg 3%} to false
+					message "&e&l직업탈퇴가 되었습니다."
+					execute console command "/clear %arg 3%"
+					execute console command "/give %arg 3% red_wool 1"
+					heal the arg 3
+				if {blue.%arg 3%} is true:
+					execute console command "/execute at %arg 3% run playsound minecraft:entity.experience_orb.pickup master @p ~ ~ ~ 1 1 "
+					loop {class::*}:
+						if {직업.%loop-value%.%arg 3%} is true:
+							set {이미선택됨.%loop-value%.blue} to false
+							set {직업.%loop-value%.%arg 3%} to false
+					message "&e&l직업탈퇴가 되었습니다."
+					execute console command "/clear %arg 3%"
+					execute console command "/give %arg 3% blue_wool 1"
+					heal the arg 3
+			if {red.%arg 3%} is true:
+				if {이미선택됨.%arg 2%.red} is true:
+					message "이미 선택된 직업입니다."
+				if {이미선택됨.%arg 2%.red} is false:
+					execute console command "/execute at %arg 3% run playsound minecraft:entity.experience_orb.pickup master @p ~ ~ ~ 1 1 "
+					loop {class::*}:
+						if {직업.%loop-value%.%arg 3%} is true:
+							set {이미선택됨.%loop-value%.red} to false
+							set {직업.%loop-value%.%arg 3%} to false
+					set {이미선택됨.%arg 2%.red} to true
+					message "&b&l%arg 2%(이)가 되었습니다."
+					set {직업.%arg 2%.%arg 3%} to true
+					execute console command "/clear %arg 3%"
+					if arg 2 is "버서커":
+						execute console command "/give %arg 3% minecraft:iron_axe{Unbreakable:1b} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 200"
+					if arg 2 is "도적":
+						execute console command "/give %arg 3% bamboo{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:12,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 100"
+					if arg 2 is "조윤경":
+						execute console command "/give %arg 3% minecraft:redstone_torch{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:13,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 200"
+					if arg 2 is "수호자":
+						execute console command "/give %arg 3% minecraft:scute{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:16,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 300"
+					if arg 2 is "암조윤경":
+						execute console command "/give %arg 3% minecraft:soul_torch{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:17,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 80"
+					if arg 2 is "마술사":
+						execute console command "/give %arg 3% minecraft:blaze_rod{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:16,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 110"
+					if arg 2 is "성기사":
+						execute console command "/give %arg 3% minecraft:iron_sword{Unbreakable:1b,AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:21,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 150"
+					if arg 2 is "거너":
+						execute console command "/give %arg 3% minecraft:golden_hoe{Unbreakable:1b,AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:10,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 80"
+					if arg 2 is "냉술사":
+						execute console command "/give %arg 3% minecraft:packed_ice{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:19,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 100"
+					execute console command "/item replace entity %arg 3% armor.chest with leather_chestplate{display:{color:16711680},Unbreakable:1b} 1"
+					execute console command "/item replace entity %arg 3% armor.head with leather_helmet{display:{color:16711680},Unbreakable:1b} 1"
+					execute console command "/item replace entity %arg 3% armor.legs with leather_leggings{display:{color:16711680},Unbreakable:1b} 1"
+					execute console command "/item replace entity %arg 3% armor.feet with leather_boots{display:{color:16711680},Unbreakable:1b} 1"
+					execute console command "/give %arg 3% red_wool 1"
+					heal the arg 3
+					stop
+			if {blue.%arg 3%} is true:
+				if {이미선택됨.%arg 2%.blue} is true:
+					message "이미 선택된 직업입니다."
+				if {이미선택됨.%arg 2%.blue} is false:
+					execute console command "/execute at %arg 3% run playsound minecraft:entity.experience_orb.pickup master @p ~ ~ ~ 1 1 "
+					loop {class::*}:
+						if {직업.%loop-value%.%arg 3%} is true:
+							set {이미선택됨.%loop-value%.blue} to false
+							set {직업.%loop-value%.%arg 3%} to false
+					set {이미선택됨.%arg 2%.blue} to true
+					message "&b&l%arg 2%(이)가 되었습니다."
+					set {직업.%arg 2%.%arg 3%} to true
+					execute console command "/clear %arg 3%"
+					if arg 2 is "버서커":
+						execute console command "/give %arg 3% minecraft:iron_axe{Unbreakable:1b} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 200"
+					if arg 2 is "도적":
+						execute console command "/give %arg 3% bamboo{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:12,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 100"
+					if arg 2 is "조윤경":
+						execute console command "/give %arg 3% minecraft:redstone_torch{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:13,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 200"
+					if arg 2 is "수호자":
+						execute console command "/give %arg 3% minecraft:scute{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:16,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 300"
+					if arg 2 is "암조윤경":
+						execute console command "/give %arg 3% minecraft:soul_torch{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:11,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 80"
+					if arg 2 is "마술사":
+						execute console command "/give %arg 3% minecraft:blaze_rod{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:16,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 110"
+					if arg 2 is "성기사":
+						execute console command "/give %arg 3% minecraft:iron_sword{Unbreakable:1b,AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:21,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 150"
+					if arg 2 is "거너":
+						execute console command "/give %arg 3% minecraft:golden_hoe{Unbreakable:1b,AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:10,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 80"
+					if arg 2 is "냉술사":
+						execute console command "/give %arg 3% minecraft:packed_ice{AttributeModifiers:[{AttributeName:""generic.attack_damage"",Name:""generic.attack_damage"",Amount:19,Operation:0,UUID:[I;-253669822,1973109645,-1236284528,-2071343219]}]} 1"
+						execute console command "/attribute %arg 3% minecraft:generic.max_health base set 100"
+					execute console command "/item replace entity %arg 3% armor.chest with leather_chestplate{display:{color:5927136},Unbreakable:1b} 1"
+					execute console command "/item replace entity %arg 3% armor.head with leather_helmet{display:{color:5927136},Unbreakable:1b} 1"
+					execute console command "/item replace entity %arg 3% armor.legs with leather_leggings{display:{color:5927136},Unbreakable:1b} 1"
+					execute console command "/item replace entity %arg 3% armor.feet with leather_boots{display:{color:5927136},Unbreakable:1b} 1"
+					execute console command "/give %arg 3% blue_wool 1"
+					heal the arg 3
+
+					
+
+
+#게임환경 설정
+on damage:
+	if {게임진행} is true:
+		if victim is player:
+			if attacker is player:
+				if {red.%attacker%} is true:
+					if {red.%victim%} is true: #같은팀을 공격했을때
+						cancel event
+					if {blue.%victim%} is true: #다른팀을 공격했을때
+						if {hitdelay.%attacker%.%victim%} is 0:
+							if {직업.냉술사.%attacker%} is true:
+								set {hitdelay.%attacker%.%victim%} to {attackdelay.%attacker%}
+								set maximum damage delay of victim to 0.1 seconds
+								chance of 30:
+									set {냉술사슬로우.%victim%} to 3
+								stop
+							if {직업.냉술사.%attacker%} is false:
+								set {hitdelay.%attacker%.%victim%} to {attackdelay.%attacker%}
+								set maximum damage delay of victim to 0.1 seconds
+								if attacker's tool is iron axe:
+									set damage to damage + {버서커추가뎀.%attacker%}
+								stop
+						if {hitdelay.%attacker%.%victim%} > 0:
+							cancel event
+						
+							
+				if {blue.%attacker%} is true:
+					if {blue.%victim%} is true: #같은팀을 공격했을때
+						cancel event
+					if {red.%victim%} is true: #다른팀을 공격했을때
+						if {hitdelay.%attacker%.%victim%} is 0:
+							if {직업.냉술사.%attacker%} is false:
+								set {hitdelay.%attacker%.%victim%} to {attackdelay.%attacker%}
+								set maximum damage delay of victim to 0.1 seconds
+								if attacker's tool is iron axe:
+									set damage to damage + {버서커추가뎀.%attacker%}
+								stop
+							if {직업.냉술사.%attacker%} is true:
+								set {hitdelay.%attacker%.%victim%} to {attackdelay.%attacker%}
+								set maximum damage delay of victim to 0.1 seconds
+								if attacker's tool is iron axe:
+									set damage to damage + {버서커추가뎀.%attacker%}
+								chance of 30:
+									set {냉술사슬로우.%victim%} to 3
+								stop
+						if {hitdelay.%attacker%.%victim%} > 0:
+							cancel event
+			else:
+				set maximum damage delay of victim to 0.1 seconds
+
+every 0.1 seconds:
+	loop all players:
+		loop all players:
+			if {hitdelay.%loop-player-2%.%loop-player-1%} > 0:
+				subtract 1 from {hitdelay.%loop-player-2%.%loop-player-1%}
+			else:
+				set {hitdelay.%loop-player-2%.%loop-player-1%} to 0
+every 0.1 seconds:
+	loop all players:
+		if {직업.버서커.%loop-player%} is false:
+			set {버서커추가뎀.%loop-player%} to 0
+
+#게임준비
+every 0.1 seconds:
+	if {게임준비.red} is true:
+		if {게임준비.blue} is true:
+			execute console command "/mb start"
+			set {게임준비.red} to false
+			set {게임준비.blue} to false
+	
+command /레드팀준비:
+	trigger:
+		set {게임준비.red} to true
+		send title "&c&l레드팀이 준비 되었습니다." to all players for 1 seconds
+
+
+command /블루팀준비:
+	trigger:
+		set {게임준비.blue} to true
+		send title "&b&l블루팀이 준비 되었습니다." to all players for 1 seconds
+
+
+
+command /레드팀점령중:
+	trigger:
+		set {레드팀점령중} to true
+
+command /레드팀점령중아님:
+	trigger:
+		set {레드팀점령중} to false
+
+
+
+command /블루팀점령중:
+	trigger:
+		set {블루팀점령중} to true
+
+command /블루팀점령중아님:
+	trigger:
+		set {블루팀점령중} to false
+
+
+
+
+#스코어 변환기
+#사용변수
+#{현재점령중} (거점이먹어져있는팀)
+#{점령상태} (지금밟고있는상태)
+#: 0 = 경합 -1은 블루가 세  1은 레드가 우세
+#{점령게이지.red/blue} (점령%게이지%)
+#{추가시간활성화.red/blue} (이 팀의 추가시간부여)
+#{추가시간.red/blue} (이 팀의 추가시간)
+
+#{강탈게이지} -80 ~ 0 까지는 블루 0 ~ 80까지 레드 0은 중립
+#{점령경과시간.red/blue}
+every 0.2 seconds:
+	if {게임진행} is true:
+		if {현재점령중} is -1:
+			if {점령상태} is 1: #레드가 거점 점령중
+				set {점령경과시간.red} to 30
+				if {강탈게이지} < 40:
+					add 1 to {강탈게이지}
+					execute console command "/execute as @a at @s run playsound minecraft:entity.experience_orb.pickup master @a ~ ~ ~ 0.5 2"
+					stop
+				if {강탈게이지} is 40:
+					set {현재점령중} to 1
+					set {추가시간활성화.red} to false
+					execute console command "/execute as @a at @s run playsound minecraft:entity.wither.break_block master @a ~ ~ ~ 0.4 1"
+					set {강탈게이지} to 0
+					stop
+			if {점령경과시간.red} is 0:
+				if {강탈게이지} > 0:
+					subtract 1 from {강탈게이지}
+					execute console command "/execute as @a at @s run playsound minecraft:entity.experience_orb.pickup master @a ~ ~ ~ 0.5 2"
+					stop
+				if {강탈게이지} <= 0:
+					stop
+			if {점령상태} is 0 or -1:
+				if {점령경과시간.red} > 0:
+					subtract 1 from {점령경과시간.red}
+				if {점령경과시간.red} is 0:
+					stop
+		if {현재점령중} is 1: 
+			if {점령상태} is -1: #블루가 거점 점령중
+				set {점령경과시간.blue} to 30
+				if {강탈게이지} > -40:
+					subtract 1 from {강탈게이지}
+					execute console command "/execute as @a at @s run playsound minecraft:entity.experience_orb.pickup master @a ~ ~ ~ 0.5 2"
+					stop
+				if {강탈게이지} is -40:
+					set {현재점령중} to -1
+					set {추가시간활성화.blue} to false
+					execute console command "/execute as @a at @s run playsound minecraft:entity.wither.break_block master @a ~ ~ ~ 0.4 1"
+					set {강탈게이지} to 0
+					stop
+			if {점령경과시간.blue} is 0:
+				if {강탈게이지} < 0:
+					add 1 to {강탈게이지}
+					execute console command "/execute as @a at @s run playsound minecraft:entity.experience_orb.pickup master @a ~ ~ ~ 0.5 2"
+					stop
+				if {강탈게이지} is 0:
+					stop
+			if {점령상태} is 0 or 1:
+				if {점령경과시간.blue} > 0:
+					subtract 1 from {점령경과시간.blue}
+				if {점령경과시간.blue} is 0:
+					stop
+		if {현재점령중} is 0:
+			if {점령상태} is -1: #블루가 거점 점령중
+				set {점령경과시간.blue} to 30
+				if {강탈게이지} > -40:
+					subtract 1 from {강탈게이지}
+					stop
+				if {강탈게이지} is -40:
+					set {현재점령중} to -1
+					set {추가시간활성화.blue} to false
+					execute console command "/execute as @a at @s run playsound minecraft:entity.wither.break_block master @a ~ ~ ~ 0.4 1"
+					set {강탈게이지} to 0
+					stop
+			if {점령상태} is 1: #레드가 거점 점령중
+				set {점령경과시간.red} to 30
+				if {강탈게이지} < 40:
+					add 1 to {강탈게이지}
+					execute console command "/execute as @a at @s run playsound minecraft:entity.experience_orb.pickup master @a ~ ~ ~ 0.5 2"
+					stop
+				if {강탈게이지} is 40:
+					set {현재점령중} to 1
+					set {추가시간활성화.red} to false
+					execute console command "/execute as @a at @s run playsound minecraft:entity.wither.break_block master @a ~ ~ ~ 0.4 1"
+					set {강탈게이지} to 0
+					stop
+			if {점령경과시간.blue} is 0:
+				if {강탈게이지} < 0:
+					add 1 to {강탈게이지}
+					set {버리기} to true
+				if {강탈게이지} is 0:
+					set {버리기} to true
+			if {점령경과시간.red} is 0:
+				if {강탈게이지} > 0:
+					subtract 1 from {강탈게이지}
+					set {버리기} to true
+				if {강탈게이지} <= 0:
+					set {버리기} to true
+
+#every 0.1 seconds:
+	#message "추가시간 활성화.blue : %{추가시간활성화.blue}% " and "추가시간 활성화.red : %{추가시간활성화.red}% " and "점령경과시간.blue : %{점령경과시간.blue}%" and "점령경과시간.red : %{점령경과시간.red}%" and "추가시간.blue : %{추가시간.blue}%" and "추가시간.red : %{추가시간.red}%" to all players
+
+
+
+
+every 0.2 seconds:
+	if {게임진행} is true:
+		if {현재점령중} is 1: #현재점령중인팀에
+			if {추가시간활성화.blue} is false: #추가시간아니면
+				if {점령게이지.red} is 999:
+					if {점령경과시간.blue} is 0:
+						set {추가시간활성화.blue} to false
+						add 1 to {점령게이지.red}
+						execute console command "/레드승리"
+						stop
+					if {점령경과시간.blue} > 0:
+						set {추가시간활성화.blue} to true
+				if {점령게이지.red} is smaller than 999:
+					add 1 to {점령게이지.red} #  1씩 더해주기
+					stop
+			if {추가시간활성화.blue} is true: #추가시간이면
+				if {블루팀점령중} is false:
+					if {추가시간.blue} > 0:
+						subtract 1 from {추가시간.blue} #추가시간 1씩 빼기
+						stop
+					if {추가시간.blue} is 0:
+						add 1 to {점령게이지.red}
+						execute console command "/레드승리"
+						stop
+				if {블루팀점령중} is true:
+					set {추가시간.blue} to 30
+					stop
+		if {현재점령중} is -1: #현재점령중인팀에
+			if {추가시간활성화.red} is false: #추가시간아니면
+				if {점령게이지.blue} is 999:
+					if {점령경과시간.red} is 0:
+						set {추가시간활성화.red} to false
+						add 1 to {점령게이지.blue} #  1씩 더해주기
+						execute console command "/블루승리"
+						stop
+					if {점령경과시간.red} is bigger than 0:
+						set {추가시간활성화.red} to true
+						stop
+				if {점령게이지.blue} is smaller than 999:
+					add 1 to {점령게이지.blue} #  1씩 더해주기
+					stop
+			if {추가시간활성화.red} is true: #추가시간이면
+				if {레드팀점령중} is false:
+					if {추가시간.red} > 0:
+						subtract 1 from {추가시간.red} #추가시간 1씩 빼기
+						stop
+					if {추가시간.red} is 0:
+						add 1 to {점령게이지.blue}
+						execute console command "/블루승리"
+						stop
+				if {레드팀점령중} is true:
+					set {추가시간.red} to 30
+					stop
+
+
+
+command /레드승리:
+	trigger:
+		set {게임진행} to false
+		send title "레드승리" to all players
+		add 1 to {레드팀스코어}
+		wait 2 seconds
+		send title "현재 스코어 &9%{블루팀스코어}% &f: &4%{레드팀스코어}%"
+		if {레드팀스코어} is 2:
+			execute console command "/mb win red"
+			execute console command "/execute at @a run playsound minecraft:entity.ender_dragon.ambient master @a ~ ~ ~ 0.6 1.4"
+		if {레드팀스코어} < 2:
+			execute console command "/mb next"
+command /블루승리:
+	trigger:
+		set {게임진행} to false
+		send title "블루승리" to all players
+		add 1 to {블루팀스코어}
+		wait 2 seconds
+		send title "현재 스코어 &9%{블루팀스코어}% &f: &4%{레드팀스코어}%"
+		if {블루팀스코어} is 2:
+			execute console command "/mb win blue"
+			execute console command "/execute at @a run playsound minecraft:entity.ender_dragon.ambient master @a ~ ~ ~ 0.6 1.4"
+		if {블루팀스코어} < 2:
+			execute console command "/mb next"
+		
+
+
+
+#스코어 변환기
+every 0.1 seconds:
+	set {mc점령게이지.red} to floor({점령게이지.red} / 10)
+	set {mc점령게이지.blue} to floor({점령게이지.blue} / 10)
+	if {추가시간활성화.red} is true:
+		execute console command "/bossbar set minecraft:point name ""&9&l 레드팀 : %{mc점령게이지.red}% &e&f추가시간 &9&l블루팀 : %{mc점령게이지.blue}%"""
+	if {추가시간활성화.blue} is true:
+		execute console command "/bossbar set minecraft:point name ""&4&l 레드팀 : %{mc점령게이지.red}% &e&f추가시간 &4&l블루팀 : %{mc점령게이지.blue}%"""
+	if {추가시간활성화.red} is false:
+		if {추가시간활성화.blue} is false:
+			if {현재점령중} is -1:
+				execute console command "/bossbar set minecraft:point name ""&9&l레드팀 : %{mc점령게이지.red}%   &l블루팀 : %{mc점령게이지.blue}%"""
+			if {현재점령중} is 1:
+				execute console command "/bossbar set minecraft:point name "" &4&l레드팀 : %{mc점령게이지.red}%   &l블루팀 : %{mc점령게이지.blue}%"""
+			if {현재점령중} is 0:
+				execute console command "/bossbar set minecraft:point name "" &l레드팀 : %{mc점령게이지.red}%   &l블루팀 : %{mc점령게이지.blue}%"""
+	if {추가시간활성화.red} is false:
+		if {추가시간활성화.blue} is false:
+			if {강탈게이지} is 0:
+				execute console command "/bossbar set minecraft:point max 40"
+				execute console command "/bossbar set minecraft:point color white"
+				execute console command "/bossbar set minecraft:point value 0"
+			if {강탈게이지} > 0:
+				execute console command "/bossbar set minecar set minecraft:point max 40"
+				execute console command "/bossbar set minecraft:point color red"
+				execute console command "/bossbar set minecraft:point value %{강탈게이지}%"
+			if {강탈게이지} < 0:
+				execute console command "/bossbar set minecraft:point max 40"
+				execute console command "/bossbar set minecraft:point color blue"
+				execute console command "/bossbar set minecraft:point value %{강탈게이지} * -1%"
+	if {추가시간활성화.red} is true:
+		execute console command "/bossbar set minecraft:point max 30"
+		execute console command "/bossbar set minecraft:point color yellow"
+		execute console command "/bossbar set minecraft:point value %{추가시간.red}%"
+	if {추가시간활성화.blue} is true:
+		execute console command "/bossbar set minecraft:point max 30"
+		execute console command "/bossbar set minecraft:point color yellow"
+		execute console command "/bossbar set minecraft:point value %{추가시간.blue}%"
+
+
+
+
+#게임진행	
+every 0.1 seconds:
+	if {게임진행} is true:	
+		if {블루팀점령중} is true:
+			if {레드팀점령중} is true:
+				set {점령상태} to 0
+
+		if {블루팀점령중} is false:
+			if {레드팀점령중} is false:
+				set {점령상태} to 0
+
+		if {블루팀점령중} is true:
+			if {레드팀점령중} is false:
+				set {점령상태} to -1
+
+		if {레드팀점령중} is true:
+			if {블루팀점령중} is false:
+				set {점령상태} to 1
+
+
+
+every 0.1 seconds:
+	if {레드팀점령중} is true:
+		set {점령경과시간.red} to 30
+	if {레드팀점령중} is false:
+		if {점령경과시간.red} > 0:
+			subtract 1 from {점령경과시간.red}
+		if {점령경과시간.red} is 0:
+	if {블루팀점령중} is true:
+		set {점령경과시간.blue} to 30
+	if {블루팀점령중} is false:
+		if {점령경과시간.blue} > 0:
+			subtract 1 from {점령경과시간.blue}
+		if {점령경과시간.blue} is 0:
+
+
+
+
+
+every 1 seconds:
+	loop all players:
+		if {게임진행} is true:
+			wipe loop-player's sidebar
+
+		if {게임진행} is false:
+	
+
+
+
+
+on death:
+	if {게임진행} is true:
+		if victim is player:
+			cancel event
+			if attacker is set:
+				message "%attacker% -> %victim%" to all players
+				execute console command "/scoreboard players add %attacker% kill 1"
+			if attacker is not set:
+				message "%{attacker.%victim%}% -> %victim%" to all players
+				execute console command "/scoreboard players add %{attacker.%victim%}% kill 1"
+			execute console command "/gamemode spectator %victim%"
+			send title "&a&l부활까지 : &c8초" to victim
+			wait 1 seconds
+			send title "&a&l부활까지 : &c7초" to victim
+			wait 1 seconds
+			send title "&a&l부활까지 : &c6초" to victim
+			wait 1 seconds
+			send title "&a&l부활까지 : &c5초" to victim
+			wait 1 seconds
+			send title "&a&l부활까지 : &c4초" to victim
+			wait 1 seconds
+			send title "&a&l부활까지 : &c3초" to victim
+			wait 1 seconds
+			send title "&a&l부활까지 : &c2초" to victim
+			wait 1 seconds
+			send title "&a&l부활까지 : &c1초" to victim
+			wait 1 seconds
+			execute console command "/gamemode adventure %victim%"
+			if {map} is "부산":
+				if {red.%victim%} is true:
+					execute console command "/tp %victim% 333 186 455"		
+				if {blue.%victim%} is true:	
+					execute console command "/tp %victim% 141 186 455"
+					
+			if {map} is "일리오스":
+				if {red.%victim%} is true:
+					execute console command "/tp %victim% -82 33 9"
+					
+				if {blue.%victim%} is true:	
+					execute console command "/tp %victim% 78 33 9"
+					
+			if {map} is "리장타워":
+				if {red.%victim%} is true:
+					execute console command "/tp %victim% -454 164 510"
+					
+				if {blue.%victim%} is true:	
+					execute console command "/tp %victim% -307 164 510"
+						
+
+
+
+
+every 0.1 seconds:
+	if {게임진행} is true:
+		loop all players: #loop-1 플레이어
+			loop {class::*}: #loop-2 직업
+				if {직업.%loop-value-2%.%loop-player%} is true:
+					if {직업.거너.%loop-player%} is true:
+						send action bar " &b&l잔탄 : &a&l%{잔탄.%loop-player%}%/6&e&l발    &b&l%{Mb.%loop-value-2%skill::2}% : &a&l%{쿨타임.%loop-value-2%.%{Mb.%loop-value-2%skill::2}%.%loop-player%}%&e&l초" to loop-player
+					if {직업.거너.%loop-player%} is false:
+						send action bar " &b&l%{Mb.%loop-value-2%skill::1}% : &a&l%{쿨타임.%loop-value-2%.%{Mb.%loop-value-2%skill::1}%.%loop-player%}%&e&l초    &b&l%{Mb.%loop-value-2%skill::2}% : &a&l%{쿨타임.%loop-value-2%.%{Mb.%loop-value-2%skill::2}%.%loop-player%}%&e&l초" to loop-player
+
+
+

@@ -1,0 +1,155 @@
+#{직업.버서커.%player%} = T/F
+
+#{쿨타임.버서커.폭주.%player%}
+
+#폭주 = 공속 증가
+
+#{쿨타임.버서커.위압.%player%}
+
+#위압 = 대상이속 감소  (전방에 30도 사거리 업)
+
+#패시브
+
+#발악 = 체력 깍이는거 비례 뎀지 증가
+
+#{버서커추가뎀.%player%} 
+
+#기본 공격력 6
+
+#추가 공격력 1 ~ 30
+
+
+#체력 		200			180			160 		140		120		100		80		60		40		20	    10 	    1
+
+#공격력		 1           2           3           4       5       6       7       8      9       10      15     30
+
+
+
+
+#버서커 체력 비례 데미지 계산
+every 0.1 seconds:
+	if {게임진행} is true:
+		loop all players:
+			if {직업.버서커.%loop-player%} is true:
+				set {_health} to loop-player's health * 2
+				if {_health} <= 200:
+					if {_health} > 180:
+						set {버서커추가뎀.%loop-player%} to 1
+					if {_health} <= 180:
+						if {_health} > 160:
+							set {버서커추가뎀.%loop-player%} to 4
+						if {_health} <= 160:
+							if {_health} > 140:
+								set {버서커추가뎀.%loop-player%} to 5
+							if {_health} <= 140:
+								if {_health} > 120:
+									set {버서커추가뎀.%loop-player%} to 7
+								if {_health} <= 120:
+									if {_health} > 100:
+										set {버서커추가뎀.%loop-player%} to 10
+									if {_health} <= 100:
+										if {_health} > 80:
+											set {버서커추가뎀.%loop-player%} to 12
+										if {_health} <= 80:
+											if {_health} > 60:
+												set {버서커추가뎀.%loop-player%} to 15
+											if {_health} <= 60:
+												if {_health} > 40:
+													set {버서커추가뎀.%loop-player%} to 17
+												if {_health} <= 40:
+													if {_health} > 20:
+														set {버서커추가뎀.%loop-player%} to 18
+													if {_health} <= 20:
+														if {_health} > 10:
+															set {버서커추가뎀.%loop-player%} to 20
+														if {_health} <= 10:
+															if {_health} > 1:
+																set {버서커추가뎀.%loop-player%} to 25
+															if {_health} is 1:
+																set {버서커추가뎀.%loop-player%} to 30
+			if {직업.버서커.%loop-player%} is false:
+				set {버서커추가뎀.%loop-player%} to 0
+															
+
+		
+		
+		
+		
+
+
+#다른플레이어가 맞았을때 공격자가 버서커면 추가뎀 추가
+
+#폭주 (우클릭)
+on right click:
+	if event-player's tool is an iron axe:
+		if {게임진행} is true:
+			if player's gamemode is adventure:
+				if event-player is not sneaking:
+					if {직업.버서커.%event-player%} is true:
+						if {쿨타임.버서커.폭주.%event-player%} is 0:
+							set {쿨타임.버서커.폭주.%event-player%} to 13
+							message "&4폭주를 사용했습니다." to event-player
+							execute console command "/execute at %event-player% run playsound minecraft:entity.wither.spawn master @a ~ ~ ~ 0.1 1"
+							set {attackdelay.%event-player%} to 2
+							message "폭주가 3초남았습니다" to event-player
+							wait 1 seconds
+							message "폭주가 2초남았습니다" to event-player
+							wait 1 seconds
+							message "폭주가 1초남았습니다" to event-player
+							wait 1 seconds
+							message "폭주가 헤제되었습니다." to event-player
+							set {attackdelay.%event-player%} to 5
+							stop
+						if {쿨타임.버서커.폭주.%event-player%} > 0:
+							message "쿨타임이 %{쿨타임.버서커.폭주.%event-player%}%초 남았습니다." to event-player
+							stop
+						
+on right click:
+	if event-player's tool is an iron axe:
+		if {게임진행} is true:
+			if event-player is sneaking:
+				if player's gamemode is adventure:
+					if {직업.버서커.%event-player%} is true:
+						if {쿨타임.버서커.위압.%event-player%} is 0:
+							set {쿨타임.버서커.위압.%event-player%} to 16
+							message "&4위압를 사용했습니다." to event-player
+							execute console command "/execute at %event-player% run playsound minecraft:entity.player.attack.crit master @a ~ ~ ~ 1 0.5"
+							loop all players within 8 meters of the event-player:
+								if loop-player's name is not event-player:
+									if {red.%event-player%} is true:
+										if {blue.%loop-player%} is true:
+											if loop-player's gamemode is adventure:
+												execute console command "/effect give %loop-player% slowness 4 5 true"
+												execute console command "/execute at %loop-player% run particle minecraft:enchant ~ ~1 ~ 0.3 0.3 0.3 0.3 200 force"
+									if {blue.%event-player%} is true:
+										if {red.%loop-player%} is true:
+											if loop-player's gamemode is adventure:
+												execute console command "/effect give %loop-player% slowness 4 5 true"
+												execute console command "/execute at %loop-player% run particle minecraft:enchant ~ ~1 ~ 0.3 0.3 0.3 0.3 200 force"
+							stop
+						if {쿨타임.버서커.위압.%event-player%} > 0:
+							message "쿨타임이 %{쿨타임.버서커.위압.%event-player%}%초 남았습니다." to event-player
+							stop
+
+
+
+every 1 seconds:
+	loop all players:
+		if {직업.버서커.%loop-player%} is true:
+			if {쿨타임.버서커.위압.%loop-player%} > 0:
+				subtract 1 from {쿨타임.버서커.위압.%loop-player%}
+			else:
+				set {쿨타임.버서커.위압.%loop-player-1%} to 0
+every 1 seconds:
+	loop all players:
+		if {직업.버서커.%loop-player%} is true:
+			if {쿨타임.버서커.폭주.%loop-player%} > 0:
+				subtract 1 from {쿨타임.버서커.폭주.%loop-player%}
+			else:
+				set {쿨타임.버서커.폭주.%loop-player%} to 0
+			
+
+
+
+		
+	

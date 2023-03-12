@@ -1,0 +1,90 @@
+on right click:
+	if player's tool is soul torch:
+		cancel event
+		if player's gamemode is adventure:
+			if player is not sneaking:
+				if {직업.암조윤경.%event-player%} is true:
+					if {쿨타임.암조윤경.저주의빛.%event-player%} is 0:
+						set {쿨타임.암조윤경.저주의빛.%event-player%} to 7
+						loop 50 times:
+							if block at location loop-number meter forwards player's head is air or snow or grass or flower or button or lever or slab:
+								set {_loc} to location loop-number-2  meter forwards event-player's head
+								play 1 end rod with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc}
+								set {_loc2} to location loop-number-2+0.2 meter forwards event-player's head
+								play 1 end rod with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc2}
+								set {_loc3} to location loop-number-2 +0.4 meter forwards event-player's head	
+								play 1 end rod with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc3}
+								if distance between player and target living entity is less than loop-number:
+									if target living entity's gamemode is adventure:
+										if {blue.%event-player%} is true:
+											if {red.%target living entity%} is true:
+												execute console command "/effect give %target living entity% minecraft:blindness 2 4 true"
+												execute console command "/execute as %event-player% run playsound minecraft:entity.player.levelup master @a ~ ~ ~ 1 1.5"
+												set {암조윤경hit.%target living entity%} to 25
+												push target living entity upwards at speed 0.8
+										if {red.%event-player%} is true:
+											if {blue.%target living entity%} is true:
+												execute console command "/effect give %target living entity% minecraft:blindness 2 4 true"
+												execute console command "/execute as %event-player% run playsound minecraft:entity.player.levelup master @a ~ ~ ~ 1 1.5"
+												set {암조윤경hit.%target living entity%} to 25
+												push target living entity upwards at speed 0.8
+										stop loop
+							if block at location loop-number meter forwards event-player's head is not air or snow or grass or flower or button or lever or slab:		
+								stop loop
+
+every 0.1 seconds:
+	loop all players:
+		if {암조윤경hit.%loop-player%} > 0:
+			subtract 1 from {암조윤경hit.%loop-player%}
+			execute console command "/execute as %loop-player% at %loop-player% run particle minecraft:witch ~ ~1 ~ 0.3 0.5 0.3 0.3 10 force"
+
+
+on rightclicking:
+	if player's tool is soul torch:
+		cancel event
+		if player's gamemode is adventure:
+			if player is sneaking:
+				if {직업.암조윤경.%event-player%} is true:
+					if {쿨타임.암조윤경.은밀한발걸음.%event-player%} is 0:	
+						set {쿨타임.암조윤경.은밀한발걸음.%event-player%} to 19
+						execute console command "/execute as %event-player% run playsound minecraft:entity.illusioner.prepare_blindness master @a ~ ~ ~ 2 1"
+						execute console command "/effect give %event-player% minecraft:invisibility 5 255 true"
+						execute console command "/effect give %event-player% minecraft:speed 5 3 true"
+						execute console command "/effect give %event-player% minecraft:strength 5 3 true"
+						execute console command "/effect give %event-player% minecraft:glowing 5 10 true"
+						message "암살모드가 되었습니다" to event-player
+						wait 5 seconds
+						message "암살모드가 헤제되었습니다" to event-player
+
+
+
+
+
+
+
+
+every 1 seconds:
+	loop all players:
+		if {직업.암조윤경.%loop-player%} is true:
+			if {쿨타임.암조윤경.은밀한발걸음.%loop-player%} > 0:
+				subtract 1 from {쿨타임.암조윤경.은밀한발걸음.%loop-player%}
+			else:
+				set {쿨타임.암조윤경.은밀한발걸음.%loop-player-1%} to 0
+		else:
+			set {버리기} to true
+every 1 seconds:
+	loop all players:
+		if {직업.암조윤경.%loop-player%} is true:
+			if {쿨타임.암조윤경.저주의빛.%loop-player%} > 0:
+				subtract 1 from {쿨타임.암조윤경.저주의빛.%loop-player%}
+			else:
+				set {쿨타임.암조윤경.저주의빛.%loop-player%} to 0
+		else:
+			set {버리기} to true
+
+
+
+
+
+			
+

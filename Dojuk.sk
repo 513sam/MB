@@ -1,0 +1,125 @@
+
+
+on rightclick holding a bamboo:
+	if {게임진행} is true:
+		if player's gamemode is adventure:
+			if event-player is not sneaking:
+				if {직업.도적.%event-player%} is true:
+					cancel event
+					if {쿨타임.도적.돌풍.%event-player%} is not set:
+						set {쿨타임.도적.돌풍.%event-player%} to 0
+					if {쿨타임.도적.돌풍.%event-player%} is 0:
+						push the event-player forwards at speed 1.3
+						loop all entities in radius 2 of event-player:
+							if loop-entity is not "%event-player%":
+								if {red.%event-entity%} is true:
+									if {blue.%loop-entity%} is true:
+										damage loop-entity by 8 hearts
+										set {attacker.%loop-entity%} to "%event-player%"
+								if {blue.%event-entity%} is true:
+									if {red.%loop-entity%} is true:
+										damage loop-entity by 8 hearts
+										set {attacker.%loop-entity%} to "%event-player%"
+						execute console command "/execute as %event-player% at @s run playsound minecraft:entity.ender_dragon.flap master @a ~ ~ ~ 1 1"
+						execute console command "/execute as %event-player% at @s run particle minecraft:flash ~ ~ ~ 0.4 0.4 0.4 0 1 force"
+						execute console command "/execute as %event-player% at @s run particle minecraft:sweep_attack ~ ~1 ~ 0.6 0.6 0.6 0 4 force"
+						push the event-player upwards at speed 0.1
+						set {쿨타임.도적.돌풍.%event-player%} to 5
+						set {대쉬중.%event-player%} to true
+						set {대쉬중카운트.%event-player%} to 0
+						while {대쉬중.%event-player%} is true:
+							if {대쉬중카운트.%event-player%} < 3:
+								wait 0.1 seconds
+								execute console command "/execute as %event-player% at @s run particle minecraft:flash ~ ~ ~ 0.4 0.4 0.4 0 1 force"
+								execute console command "/execute as %event-player% at @s run particle minecraft:sweep_attack ~ ~1 ~ 0.6 0.6 0.6 0 4 force"
+								add 1 to {대쉬중카운트.%event-player%}
+								loop all entities in radius 3 of event-player:
+									if loop-entity is not "%event-player%":
+										if {red.%event-player%} is true:
+											if {blue.%loop-entity%} is true:
+												execute console command "/execute as %event-player% at @s run playsound minecraft:block.anvil.place master @a ~ ~ ~ 1 2"
+												damage loop-entity by 8 hearts
+												set {attacker.%loop-entity%} to "%event-player%"
+										if {blue.%event-player%} is true:
+											if {red.%loop-entity%} is true:
+												execute console command "/execute as %event-player% at @s run playsound minecraft:block.anvil.place master @a ~ ~ ~ 1 2"
+												damage loop-entity by 8 hearts
+												set {attacker.%loop-entity%} to "%event-player%"
+							if {대쉬중카운트.%event-player%} >= 3:
+								set {대쉬중.%event-player%} to false
+						stop
+					else:
+						message "&4쿨타임이 %{쿨타임.도적.돌풍.%event-player%}%초 남았습니다." to event-player
+					
+					
+on rightclick holding a bamboo:
+	if {게임진행} is true:
+		if player's gamemode is adventure:
+			if event-player is sneaking:
+				if {직업.도적.%event-player%} is true:
+					cancel event
+					if {쿨타임.도적.에어드라이버.%event-player%} is not set:
+						set {쿨타임.도적.에어드라이버.%event-player%} to 0
+					if {쿨타임.도적.에어드라이버.%event-player%} is 0:
+						set {쿨타임.도적.에어드라이버.%event-player%} to 13
+						execute console command "/execute as %event-player% at @s run particle minecraft:cloud ~ ~1 ~ 1 0 1 0 50 force"
+						push the event-player forwards at speed 0.7
+						push the event-player upwards at speed 2.3
+						wait 0.4 seconds
+						set {도약발동공중.%event-player%} to true
+						wait 0.8 seconds
+						push the event-player downwards at speed 3
+						stop
+					else:
+						message "&4쿨타임이 %{쿨타임.도적.에어드라이버.%event-player%}%초 남았습니다." to event-player
+					
+				
+every 0.1 seconds:
+	loop all players:
+		if {도약발동공중.%loop-player%} is true:
+			if the loop-player is on ground:
+				set {_player} to "%loop-player%"
+				set {도약발동공중.%loop-player%} to false
+				execute console command "/execute as %{_player}% at @s run particle minecraft:dust 1 0 0 1 ~ ~1 ~ 1.7 0 1.7 0 300 force"
+				execute console command "/execute as %{_player}% at @s run particle minecraft:dust 0 0 0 1 ~ ~1 ~ 1.7 0 1.7 0 300 force"
+				execute console command "/execute as %{_player}% at @s run particle minecraft:explosion ~ ~0.5 ~ 1.5 1 1.5 0 50 force"
+				execute console command "/execute as %{_player}% at @s run playsound minecraft:entity.generic.explode master @a ~ ~ ~ 1 1.2"
+				loop all players in radius 3 of loop-player:
+					if {red.%loop-player-1%} is true:
+						if {blue.%loop-player-2%} is true:
+							push the loop-player-2 upwards at speed 1
+					if {blue.%loop-player-1%} is true:
+						if {red.%loop-player-2%} is true:
+							push the loop-player-2 upwards at speed 1
+				loop all players in radius 5 of loop-player-1:
+					if {red.%loop-player-1%} is true:
+						if {blue.%loop-player-2%} is true:
+							damage loop-player-2 by 30 hearts
+							set {attacker.%loop-player-2%} to "%loop-player-1%"
+					if {blue.%loop-player-1%} is true:
+						if {red.%loop-player-2%} is true:
+							damage loop-player-2 by 30 hearts
+							set {attacker.%loop-player-2%} to "%loop-player-1%"
+				
+				
+				
+				
+
+every 1 seconds:
+	loop all players:
+		if {직업.도적.%loop-player%} is true:
+			if {쿨타임.도적.돌풍.%loop-player%} > 0:
+				subtract 1 from {쿨타임.도적.돌풍.%loop-player%}
+			else:
+				set {쿨타임.도적.돌풍.%loop-player-1%} to 0
+		else:
+			set {버리기} to true
+every 1 seconds:
+	loop all players:
+		if {직업.도적.%loop-player%} is true:
+			if {쿨타임.도적.에어드라이버.%loop-player%} > 0:
+				subtract 1 from {쿨타임.도적.에어드라이버.%loop-player%}
+			else:
+				set {쿨타임.도적.에어드라이버.%loop-player%} to 0
+		else:
+			set {버리기} to true

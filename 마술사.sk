@@ -1,0 +1,119 @@
+on right click:
+	if player's tool is blaze rod:
+		cancel event
+		if player's gamemode is adventure:
+			if player is not sneaking:
+				if {직업.마술사.%event-player%} is true:
+					if {쿨타임.마술사.야바위.%event-player%} is 0:
+						set {엔티티감지.%event-player%} to false
+						loop 50 times:
+							if block at location loop-number meter forwards event-player's head is air or snow or grass or flower or button or lever or slab:
+								set {쿨타임.마술사.야바위.%event-player%} to 10
+								set {_loc} to location loop-number-2  meter forwards event-player's head
+								play 1 flame with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc}
+								set {_loc2} to location loop-number-2+0.2 meter forwards event-player's head
+								play 1 flame with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc2}
+								set {_loc3} to location loop-number-2 +0.4 meter forwards event-player's head	
+								play 1 flame with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc3}
+								if distance between event-player and target living entity is less than loop-number:
+									if target living entity is not event-player:
+										if {red.%event-player%} is true:
+											if {blue.%target living entity%} is true:
+												delete {inv.%event-player%::*}
+												set {엔티티감지.%event-player%} to true
+												execute console command "/execute as %event-player% at @s run playsound minecraft:entity.enderman.teleport master @a ~ ~ ~ 1 1.5"
+												execute console command "/execute as %target living entity% at @s run playsound minecraft:entity.enderman.teleport master @a ~ ~ ~ 1 1.5"
+												set {_temp} to 0
+												loop 36 times:
+													add slot {_temp} of target living entity's inventory to {inv.%event-player%::*}
+													add 1 to {_temp}
+												set {inv.%event-player%::*} to shuffled {inv.%event-player%::*}
+												set {_temp} to 0
+												loop 36 times:
+													set slot {_temp} of target living entity's inventory to {inv.%event-player%::%loop-number-2%}
+													add 1 to {_temp}
+												damage target living entity by 12 hearts
+												set {attacker.%target living entity%} to "%event-player%"
+										if {blue.%event-player%} is true:
+											if {red.%target living entity%} is true:
+												delete {inv.%event-player%::*}
+												set {엔티티감지.%event-player%} to true
+												execute console command "/execute as %event-player% at @s run playsound minecraft:entity.enderman.teleport master @a ~ ~ ~ 1 1.5"
+												execute console command "/execute as %target living entity% at @s run playsound minecraft:entity.enderman.teleport master @a ~ ~ ~ 1 1.5"
+												set {_temp} to 0
+												loop 36 times:
+													add slot {_temp} of target living entity's inventory to {inv.%event-player%::*}
+													add 1 to {_temp}
+												set {inv.%event-player%::*} to shuffled {inv.%event-player%::*}
+												set {_temp} to 0
+												loop 36 times:
+													set slot {_temp} of target living entity's inventory to {inv.%event-player%::%loop-number-2%}
+													add 1 to {_temp}
+												damage target living entity by 12 hearts
+												set {attacker.%target living entity%} to "%event-player%"
+											stop loop
+							if block at location loop-number meter forwards event-player's head is not air or snow or grass or flower or button or lever or slab:		
+								stop loop
+			
+
+
+
+on right click:
+	if player's tool is blaze rod:
+		cancel event
+		if player's gamemode is adventure:
+			if player is sneaking:
+				if {직업.마술사.%event-player%} is true:
+					if {쿨타임.마술사.위치바꾸기.%event-player%} is 0:
+						set {쿨타임.마술사.위치바꾸기.%event-player%} to 9
+						loop 50 times:
+							if block at location loop-number meter forwards event-player's head is air or snow or grass or flower or button or lever or slab:
+								set {_loc} to location loop-number-2  meter forwards event-player's head
+								play 1 flame with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc}
+								set {_loc2} to location loop-number-2+0.2 meter forwards event-player's head
+								play 1 flame with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc2}
+								set {_loc3} to location loop-number-2 +0.4 meter forwards event-player's head	
+								play 1 flame with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc3}
+								if distance between event-player and target living entity is less than loop-number:
+									if target living entity is not event-player:
+										if {red.%event-player%} is true:
+											if {blue.%target living entity%} is true:
+												set {타켓위치.%event-player%} to target living entity's location
+												set {내위치.%event-player%} to event-player's location
+												teleport target living entity to {내위치.%event-player%}
+												teleport event-player to {타켓위치.%event-player%}
+												execute console command "/execute as %event-player% at @s run playsound minecraft:entity.enderman.teleport master @a ~ ~ ~ 0.5 1.5"
+												execute console command "/execute as %target living entity% at @s run playsound minecraft:entity.enderman.teleport master @a ~ ~ ~ 0.5 1.5"
+										if {blue.%event-player%} is true:
+											if {red.%target living entity%} is true:
+												set {타켓위치.%event-player%} to target living entity's location
+												set {내위치.%event-player%} to event-player's location
+												set {엔티티감지.%event-player%} to true
+												teleport target living entity to {내위치.%event-player%}
+												teleport event-player to {타켓위치.%event-player%}
+												execute console command "/execute as %event-player% at @s run playsound minecraft:entity.enderman.teleport master @a ~ ~ ~ 0.5 1.5"
+												execute console command "/execute as %target living entity% at @s run playsound minecraft:entity.enderman.teleport master @a ~ ~ ~ 0.5 1.5"
+											stop loop
+							if block at location loop-number meter forwards event-player's head is not air or snow or grass or flower or button or lever or slab:		
+								stop loop
+
+
+
+every 1 seconds:
+	loop all players:
+		if {직업.마술사.%loop-player%} is true:
+			if {쿨타임.마술사.야바위.%loop-player%} > 0:
+				subtract 1 from {쿨타임.마술사.야바위.%loop-player%}
+			else:
+				set {쿨타임.마술사.야바위.%loop-player-1%} to 0
+		else:
+			set {버리기} to true
+every 1 seconds:
+	loop all players:
+		if {직업.마술사.%loop-player%} is true:
+			if {쿨타임.마술사.위치바꾸기.%loop-player%} > 0:
+				subtract 1 from {쿨타임.마술사.위치바꾸기.%loop-player%}
+			else:
+				set {쿨타임.마술사.위치바꾸기.%loop-player%} to 0
+		else:
+			set {버리기} to true

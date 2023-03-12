@@ -1,0 +1,94 @@
+
+
+
+
+on right click:
+	if player's tool is redstone torch:
+		cancel event
+		if player's gamemode is adventure:
+			if player is not sneaking:
+				if {직업.조윤경.%event-player%} is true:
+					if {쿨타임.조윤경.흡수.%event-player%} is 0:
+						set {엔티티감지.%event-player%} to false
+						loop 50 times:
+							if block at location loop-number meter forwards event-player's head is air or snow or grass or flower or button or lever or slab:
+								if distance between event-player and target living entity is less than loop-number:
+									if target living entity is not event-player:
+										if {red.%event-player%} is true:
+											if {red.%target living entity%} is true:
+												set {distance.%event-player%} to location loop-number meter forwards event-player's head
+												set {쿨타임.조윤경.흡수.%event-player%} to 3
+												set {엔티티감지.%event-player%} to true
+												execute console command "/effect give %target living entity% minecraft:absorption 4 4 true"
+												execute console command "/execute as %event-player% run playsound minecraft:entity.player.levelup master @a ~ ~ ~ 1 1.5"
+										if {blue.%event-player%} is true:
+											if {blue.%target living entity%} is true:
+												set {target-entity.%event-player%} to target living entity
+												set {distance.%event-player%} to location loop-number meter forwards event-player's head
+												set {쿨타임.조윤경.흡수.%event-player%} to 3
+												set {엔티티감지.%event-player%} to true
+												execute console command "/effect give %target living entity% minecraft:absorption 4 4 true"
+												execute console command "/execute as %event-player% run playsound minecraft:entity.player.levelup master @a ~ ~ ~ 1 1.5"
+										if {엔티티감지.%event-player%} is true:
+											loop loop-number times:
+												set {_loc} to location loop-number-2  meter forwards event-player's head
+												play 1 heart with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc}
+												set {_loc2} to location loop-number-2+0.2 meter forwards event-player's head
+												play 1 heart with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc2}
+												set {_loc3} to location loop-number-2 +0.4 meter forwards event-player's head	
+												play 1 heart with offset of 0.05, 0.05, 0.05 and speed 0 at {_loc3}
+											stop loop
+							if block at location loop-number meter forwards event-player's head is not air or snow or grass or flower or button or lever or slab:		
+								stop loop
+
+
+
+
+on rightclicking:
+	if player's tool is redstone torch:
+		cancel event
+		if player's gamemode is adventure:
+			if player is sneaking:
+				if {직업.조윤경.%event-player%} is true:
+					if {쿨타임.조윤경.응급처치.%event-player%} is 0:	
+						set {쿨타임.조윤경.응급처치.%event-player%} to 11
+						execute console command "/execute as %event-player% run playsound minecraft:block.note_block.chime master @a ~ ~ ~ 1 1.5"
+						loop all players in radius 5 of event-player:
+							if {blue.%event-player%} is true:
+								if {blue.%loop-player%} is true:
+									execute console command "/effect give %loop-player% minecraft:regeneration 2 7 true"
+									execute console command "/execute as %loop-player% at @s run particle minecraft:happy_villager ~ ~1 ~ 0.3 0.5 0.3 0 50 force"
+							if {red.%event-player%} is true:
+								if {red.%loop-player%} is true:
+									execute console command "/effect give %loop-player% minecraft:regeneration 2 7 true"
+									execute console command "/execute as %loop-player% at @s run particle minecraft:happy_villager ~ ~1 ~ 0.3 0.5 0.3 0 50 force"
+
+
+
+
+
+every 1 seconds:
+	loop all players:
+		if {직업.조윤경.%loop-player%} is true:
+			if {쿨타임.조윤경.흡수.%loop-player%} > 0:
+				subtract 1 from {쿨타임.조윤경.흡수.%loop-player%}
+			else:
+				set {쿨타임.조윤경.흡수.%loop-player-1%} to 0
+		else:
+			set {버리기} to true
+every 1 seconds:
+	loop all players:
+		if {직업.조윤경.%loop-player%} is true:
+			if {쿨타임.조윤경.응급처치.%loop-player%} > 0:
+				subtract 1 from {쿨타임.조윤경.응급처치.%loop-player%}
+			else:
+				set {쿨타임.조윤경.응급처치.%loop-player%} to 0
+		else:
+			set {버리기} to true
+
+
+
+
+
+			
+
